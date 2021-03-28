@@ -28,18 +28,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void getData() async {
-    var list = await todoService.readList();
-    list.forEach((e) {
-      setState(() {
-        var todo = new Todo();
-        todo.id = e["id"];
-        todo.title = e["title"];
-        todo.content = e["content"];
-        todo.status = e["status"] == 0 ? false : true;
-        listTodos.add(todo);
-      });
-      showAll();
-    });
+    final list = await todoService.readList();
+    showAll();
   }
 
   void showAll() async {
@@ -61,8 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  void initState() {
-    getData();
+  void initState() async {
+    listTodos = await todoService.getTodoList();
     super.initState();
   }
 

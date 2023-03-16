@@ -1,8 +1,8 @@
 class Todo {
-  int id;
-  String title;
-  String content;
-  bool status;
+  int? id;
+  String? title;
+  String? content;
+  bool? status;
   Todo.withId({this.id, this.title, this.content, this.status});
   Todo({this.title, this.content, this.status});
 

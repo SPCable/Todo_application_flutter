@@ -18,7 +18,6 @@ Future main() async {
 
   group("Database", () {
     test("Add a Todo", () async {
-      if (db != null) {}
       expect((await db.query("TodoList")).isEmpty, true);
 
       Todo todo = new Todo.withId(

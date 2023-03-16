@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_application/Screens/dialog_add_wigdet.dart';
 import 'package:todo_application/models/todo.dart';
 import 'package:todo_application/services/todo_service.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title});
   final String title;
 
   @override
@@ -15,7 +13,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-  List<Todo> todos = <Todo>[];
+  late List<Todo> todos = <Todo>[];
   List<Todo> updateTodos = <Todo>[];
   List<Todo> listTodos = <Todo>[];
   bool value = false;
@@ -28,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void getData() async {
-    final list = await todoService.readList();
+    listTodos = await todoService.getTodoList();
     showAll();
   }
 
@@ -51,8 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  void initState() async {
-    listTodos = await todoService.getTodoList();
+  void initState() {
     super.initState();
   }
 
@@ -63,39 +60,44 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text(widget.title),
       ),
-      body: Container(
-        padding: EdgeInsets.all(8),
-        child: Center(
-          child: ListView.builder(
-            itemCount: todos.length,
-            itemBuilder: (context, index) {
-              final todo = todos[index];
+      body: FutureBuilder(
+          future: todoService.getTodoList(),
+          builder: (context, snapshot) {
+            todos = snapshot.data ?? [];
+            return Container(
+              padding: EdgeInsets.all(8),
+              child: Center(
+                child: ListView.builder(
+                  itemCount: todos.length,
+                  itemBuilder: (context, index) {
+                    final todo = todos[index];
 
-              return ListTile(
-                subtitle: Text(todo.content),
-                onTap: () {
-                  setState(() {
-                    todo.status = !todo.status;
-                    if (todo.status == false) {
-                      todoService.updateList(todo.id, 0);
-                    } else {
-                      todoService.updateList(todo.id, 1);
-                    }
-                  });
-                  try {} catch (e) {
-                    print(e);
-                  }
-                },
-                title: Text(todo.title),
-                trailing: Checkbox(
-                  value: todo.status,
-                  onChanged: (value) {},
+                    return ListTile(
+                      subtitle: Text(todo.content!),
+                      onTap: () {
+                        setState(() {
+                          todo.status = !todo.status!;
+                          if (todo.status == false) {
+                            todoService.updateList(todo.id, 0);
+                          } else {
+                            todoService.updateList(todo.id, 1);
+                          }
+                        });
+                        try {} catch (e) {
+                          print(e);
+                        }
+                      },
+                      title: Text(todo.title!),
+                      trailing: Checkbox(
+                        value: todo.status,
+                        onChanged: (value) {},
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         focusColor: Colors.amber,
         child: Icon(Icons.add),

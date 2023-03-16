@@ -3,7 +3,7 @@ import 'package:todo_application/models/todo.dart';
 import 'package:todo_application/repositories/repostitory.dart';
 
 class TodoService {
-  Repository _repository;
+  late Repository _repository;
   List<Todo> todos = [];
   TodoService() {
     _repository = Repository();
@@ -36,7 +36,7 @@ class TodoService {
     return await _repository.deleteData('TodoList');
   }
 
-  Future<void> updateList(int id, int status) async {
+  Future<void> updateList(int? id, int status) async {
     return await _repository.updateData('TodoList', id, status);
   }
 }
